@@ -36,3 +36,9 @@ Constructing the sound device before USB stack is ready = silent failure.
 ### Target binary name for Pi 4 aarch64
 With `RASPPI=4 AARCH=64`, Circle produces `kernel8-rpi4.img` (not `kernel8.img`).
 Copy this as `kernel8-rpi4.img` to the SD card FAT32 partition alongside `config.txt`.
+
+### CI uses STDLIB_SUPPORT=1; production requires STDLIB_SUPPORT=3
+The GitHub Actions workflow builds with `STDLIB_SUPPORT=1` (libgcc only) because
+`gcc-aarch64-linux-gnu` on ubuntu-latest lacks a newlib-based libstdc++. This validates
+compilation but will not link a complete binary. For a bootable `kernel8-rpi4.img`,
+build locally with the Arm GNU Toolchain (aarch64-none-elf) and `STDLIB_SUPPORT=3`.
