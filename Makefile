@@ -7,6 +7,7 @@ STDLIB_SUPPORT = 3
 
 VITALINC = \
     -I$(VITALHOME)/src/common \
+    -I$(VITALHOME)/src/common/wavetable \
     -I$(VITALHOME)/src/synthesis \
     -I$(VITALHOME)/src/synthesis/synth_engine \
     -I$(VITALHOME)/src/synthesis/effects \
@@ -29,7 +30,6 @@ DEFINE       += $(VITALDEFS)
 
 VITAL_COMMON_SRCS := \
     $(VITALHOME)/src/common/line_generator.cpp \
-    $(VITALHOME)/src/common/midi_manager.cpp \
     $(VITALHOME)/src/common/synth_parameters.cpp \
     $(VITALHOME)/src/common/synth_types.cpp \
     $(VITALHOME)/src/common/tuning.cpp
