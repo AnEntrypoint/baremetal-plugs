@@ -49,12 +49,12 @@ VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
 
 VITAL_OBJS_ALL := $(VITAL_COMMON_SRCS:.cpp=.o) $(VITAL_SYNTH_SRCS:.cpp=.o)
 
-# Both files define vital::SoundEngine — only link effects_engine version (includes chorus/upsampler)
+# Both files define vital::SoundEngine — use synth_engine version (has process() used by vital_synth.cpp)
 SOUND_ENGINE_EFF = $(VITALHOME)/src/synthesis/effects_engine/sound_engine.o
 SOUND_ENGINE_SYN = $(VITALHOME)/src/synthesis/synth_engine/sound_engine.o
 VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_SYN) $(SOUND_ENGINE_EFF),$(VITAL_OBJS_ALL))
 
-OBJS = src/main.o src/kernel.o src/vital_synth.o src/libc_stubs.o $(VITAL_OBJS_FILTERED) $(SOUND_ENGINE_EFF)
+OBJS = src/main.o src/kernel.o src/vital_synth.o src/libc_stubs.o $(VITAL_OBJS_FILTERED) $(SOUND_ENGINE_SYN)
 
 LIBS = $(CIRCLEHOME)/lib/sched/libsched.a \
        $(CIRCLEHOME)/lib/sound/libsound.a \
@@ -69,9 +69,9 @@ src/vital_synth.o: src/vital_synth.cpp
 	@echo "  CPP   $@"
 	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
 
-$(SOUND_ENGINE_EFF): $(VITALHOME)/src/synthesis/effects_engine/sound_engine.cpp
+$(SOUND_ENGINE_SYN): $(VITALHOME)/src/synthesis/synth_engine/sound_engine.cpp
 	@echo "  CPP   $@"
-	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -include chorus_module.h -include upsampler.h -c -o $@ $<
+	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -include chorus_module.h -c -o $@ $<
 
 $(VITAL_OBJS_FILTERED): %.o: %.cpp
 	@echo "  CPP   $@"
