@@ -6,7 +6,6 @@ VITALHOME  = ../vital
 STDLIB_SUPPORT = 3
 
 VITALINC = \
-    -I$(VITALHOME)/headless/JuceLibraryCode \
     -I$(VITALHOME)/src/common \
     -I$(VITALHOME)/src/synthesis \
     -I$(VITALHOME)/src/synthesis/synth_engine \
@@ -23,9 +22,9 @@ VITALINC = \
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
 
-VITALFLAGS = $(VITALINC) $(VITALDEFS)
+VITALFLAGS = -I src $(VITALINC) $(VITALDEFS)
 
-EXTRAINCLUDE += $(VITALINC) -I src
+EXTRAINCLUDE += -I src $(VITALINC)
 DEFINE       += $(VITALDEFS)
 
 VITAL_COMMON_SRCS := $(wildcard $(VITALHOME)/src/common/*.cpp)
