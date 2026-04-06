@@ -52,9 +52,9 @@ VITAL_OBJS_ALL := $(VITAL_COMMON_SRCS:.cpp=.o) $(VITAL_SYNTH_SRCS:.cpp=.o)
 # Both files define vital::SoundEngine — only link effects_engine version (includes chorus/upsampler)
 SOUND_ENGINE_EFF = $(VITALHOME)/src/synthesis/effects_engine/sound_engine.o
 SOUND_ENGINE_SYN = $(VITALHOME)/src/synthesis/synth_engine/sound_engine.o
-VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_SYN),$(VITAL_OBJS_ALL))
+VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_SYN) $(SOUND_ENGINE_EFF),$(VITAL_OBJS_ALL))
 
-OBJS = src/main.o src/kernel.o src/vital_synth.o src/libc_stubs.o $(VITAL_OBJS_FILTERED)
+OBJS = src/main.o src/kernel.o src/vital_synth.o src/libc_stubs.o $(VITAL_OBJS_FILTERED) $(SOUND_ENGINE_EFF)
 
 LIBS = $(CIRCLEHOME)/lib/sched/libsched.a \
        $(CIRCLEHOME)/lib/sound/libsound.a \
