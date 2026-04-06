@@ -17,7 +17,7 @@ VITALINC = \
     -I$(VITALHOME)/src/synthesis/modules \
     -I$(VITALHOME)/src/synthesis/utilities \
     -I$(VITALHOME)/third_party/JUCE/modules \
-    -I$(VITALHOME)/third_party/json
+    -I$(VITALHOME)/third_party
 
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
