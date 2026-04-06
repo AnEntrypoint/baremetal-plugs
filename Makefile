@@ -25,8 +25,8 @@ VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
 
 VITALFLAGS = $(VITALINC) $(VITALDEFS)
 
-EXTRAINCLUDE += -I src
-DEFINE       +=
+EXTRAINCLUDE += $(VITALINC) -I src
+DEFINE       += $(VITALDEFS)
 
 VITAL_COMMON_SRCS := $(wildcard $(VITALHOME)/src/common/*.cpp)
 VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
