@@ -19,6 +19,7 @@ VITALINC = \
     -I$(VITALHOME)/src/synthesis/modules \
     -I$(VITALHOME)/src/synthesis/producers \
     -I$(VITALHOME)/src/synthesis/utilities \
+    -I$(VITALHOME)/src/interface/look_and_feel \
     -I$(VITALHOME)/third_party/JUCE/modules \
     -I$(VITALHOME)/third_party
 
