@@ -26,9 +26,9 @@ VITALINC = \
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
 
-VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h -include chorus_module.h -include upsampler.h
+VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h
 
-EXTRAINCLUDE += -I src $(VITALINC) -include operators.h -include chorus_module.h -include upsampler.h
+EXTRAINCLUDE += -I src $(VITALINC) -include operators.h
 DEFINE       += $(VITALDEFS)
 
 VITAL_COMMON_SRCS := \
@@ -49,6 +49,7 @@ VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
 
 VITAL_OBJS := $(VITAL_COMMON_SRCS:.cpp=.o) $(VITAL_SYNTH_SRCS:.cpp=.o)
 
+
 OBJS = src/main.o src/kernel.o src/vital_synth.o $(VITAL_OBJS)
 
 LIBS = $(CIRCLEHOME)/lib/sched/libsched.a \
@@ -64,7 +65,15 @@ src/vital_synth.o: src/vital_synth.cpp
 	@echo "  CPP   $@"
 	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
 
-$(VITAL_OBJS): %.o: %.cpp
+
+SOUND_ENGINE_OBJ = $(VITALHOME)/src/synthesis/effects_engine/sound_engine.o
+VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_OBJ),$(VITAL_OBJS))
+
+$(SOUND_ENGINE_OBJ): $(VITALHOME)/src/synthesis/effects_engine/sound_engine.cpp
+	@echo "  CPP   $@"
+	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -include chorus_module.h -include upsampler.h -c -o $@ $<
+
+$(VITAL_OBJS_FILTERED): %.o: %.cpp
 	@echo "  CPP   $@"
 	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
 
