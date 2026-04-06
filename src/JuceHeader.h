@@ -183,6 +183,13 @@ public:
     void processNextMidiBuffer(MidiBuffer&, int, int, bool) {}
 };
 
+
+// FloatVectorOperations stub (juce_audio_basics)
+class FloatVectorOperations {
+public:
+    static void disableDenormalisedNumberSupport(bool=true) {}
+    static void enableFlushToZeroMode(bool=true) {}
+};
 // JUCE macros
 #define JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(className) \
     className(const className&) = delete; \

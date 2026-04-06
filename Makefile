@@ -26,9 +26,9 @@ VITALINC = \
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
 
-VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h
+VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h -include chorus_module.h
 
-EXTRAINCLUDE += -I src $(VITALINC) -include operators.h
+EXTRAINCLUDE += -I src $(VITALINC) -include operators.h -include chorus_module.h
 DEFINE       += $(VITALDEFS)
 
 VITAL_COMMON_SRCS := \
