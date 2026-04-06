@@ -1,7 +1,7 @@
 #pragma once
+#include <circle/types.h>
 
-#include "sound_engine.h"
-#include "synth_types.h"
+struct VitalSynthImpl;
 
 class VitalSynth {
 public:
@@ -9,7 +9,7 @@ public:
     static constexpr int kSampleRate = 48000;
 
     VitalSynth();
-    ~VitalSynth() = default;
+    ~VitalSynth();
 
     void init();
     void noteOn(int note, float velocity);
@@ -17,6 +17,5 @@ public:
     void fillBuffer(s16* pBuffer, unsigned nFrames);
 
 private:
-    vital::SoundEngine engine_;
-    bool initialized_;
+    VitalSynthImpl* impl_;
 };

@@ -23,8 +23,10 @@ VITALINC = \
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
 
-EXTRAINCLUDE += $(VITALINC) -I src
-DEFINE       += $(VITALDEFS)
+VITALFLAGS = $(VITALINC) $(VITALDEFS)
+
+EXTRAINCLUDE += -I src
+DEFINE       +=
 
 VITAL_COMMON_SRCS := $(wildcard $(VITALHOME)/src/common/*.cpp)
 VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
@@ -48,5 +50,13 @@ LIBS = $(CIRCLEHOME)/lib/sched/libsched.a \
        $(CIRCLEHOME)/lib/libcircle.a
 
 include $(CIRCLEHOME)/Rules.mk
+
+src/vital_synth.o: src/vital_synth.cpp
+	@echo "  CPP   $@"
+	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
+
+$(VITAL_OBJS): %.o: %.cpp
+	@echo "  CPP   $@"
+	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
 
 -include $(DEPS)
