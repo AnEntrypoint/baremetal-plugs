@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, master]
 
+env:
+  TOOLCHAIN_VER: 13.3.rel1
+  TOOLCHAIN_NAME: arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,8 +18,23 @@ jobs:
         with:
           path: baremetal-vital
 
-      - name: install toolchain
-        run: sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+      - name: cache toolchain
+        id: cache-toolchain
+        uses: actions/cache@v4
+        with:
+          path: /opt/${{ env.TOOLCHAIN_NAME }}
+          key: arm-gnu-toolchain-${{ env.TOOLCHAIN_VER }}
+
+      - name: download toolchain
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
+        run: |
+          curl -fL "https://developer.arm.com/-/media/Files/downloads/gnu/${{ env.TOOLCHAIN_VER }}/binrel/${{ env.TOOLCHAIN_NAME }}.tar.xz" \
+            -o toolchain.tar.xz
+          sudo tar -xf toolchain.tar.xz -C /opt
+          rm toolchain.tar.xz
+
+      - name: add toolchain to path
+        run: echo "/opt/${{ env.TOOLCHAIN_NAME }}/bin" >> $GITHUB_PATH
 
       - name: clone circle
         run: git clone --depth 1 https://github.com/rsta2/circle.git circle
@@ -26,16 +45,16 @@ jobs:
       - name: build circle libs
         working-directory: circle
         run: |
-          make -C lib           RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
-          make -C lib/usb       RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
-          make -C lib/input     RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
-          make -C lib/fs        RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
-          make -C lib/sched     RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
-          make -C lib/sound     RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu-
+          make -C lib       RASPPI=4 AARCH=64
+          make -C lib/usb   RASPPI=4 AARCH=64
+          make -C lib/input RASPPI=4 AARCH=64
+          make -C lib/fs    RASPPI=4 AARCH=64
+          make -C lib/sched RASPPI=4 AARCH=64
+          make -C lib/sound RASPPI=4 AARCH=64
 
       - name: build kernel
         working-directory: baremetal-vital
-        run: make RASPPI=4 AARCH=64 PREFIX64=aarch64-linux-gnu- STDLIB_SUPPORT=1
+        run: make RASPPI=4 AARCH=64 STDLIB_SUPPORT=3
 
       - uses: actions/upload-artifact@v4
         with:
