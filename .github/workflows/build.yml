@@ -42,6 +42,10 @@ jobs:
       - name: clone vital
         run: git clone --depth 1 https://github.com/mtytel/vital.git vital
 
+
+      - name: patch vital sources
+        working-directory: vital
+        run: git apply ../baremetal-vital/patches/effects_modulation_handler.patch
       - name: build circle libs
         working-directory: circle
         run: |

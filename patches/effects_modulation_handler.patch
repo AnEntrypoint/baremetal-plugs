@@ -1,0 +1,10 @@
+--- a/src/synthesis/effects_engine/effects_modulation_handler.h
++++ b/src/synthesis/effects_engine/effects_modulation_handler.h
+@@ -51,6 +51,8 @@
+       void correctToTime(double seconds) override;
+       void disableUnnecessaryModSources();
+       void disableModSource(const std::string& source);
++      void setPitchWheelControl(Value*) {}
++      void setModWheelControl(Value*) {}
+ 
+       output_map& getPolyModulations() override;
