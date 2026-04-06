@@ -50,7 +50,7 @@ VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
 VITAL_OBJS := $(VITAL_COMMON_SRCS:.cpp=.o) $(VITAL_SYNTH_SRCS:.cpp=.o)
 
 
-OBJS = src/main.o src/kernel.o src/vital_synth.o $(VITAL_OBJS)
+OBJS = src/main.o src/kernel.o src/vital_synth.o src/libc_stubs.o $(VITAL_OBJS)
 
 LIBS = $(CIRCLEHOME)/lib/sched/libsched.a \
        $(CIRCLEHOME)/lib/sound/libsound.a \
