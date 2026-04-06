@@ -55,6 +55,18 @@ public:
     const char* toRawUTF8() const { return s_.c_str(); }
     std::string toStdString() const { return s_; }
     static String fromUTF8(const char* s) { return String(s); }
+    float getFloatValue() const { try { return std::stof(s_); } catch(...) { return 0.0f; } }
+    int getIntValue() const { try { return std::stoi(s_); } catch(...) { return 0; } }
+    String substring(int start, int end = -1) const {
+        if (end < 0) return String(s_.substr(start));
+        return String(s_.substr(start, end - start));
+    }
+    char operator[](int i) const { return (i >= 0 && i < (int)s_.size()) ? s_[i] : 0; }
+    String fromFirstOccurrenceOf(const String& sub, bool includeSubString, bool) const { 
+        auto pos = s_.find(sub.s_);
+        if (pos == std::string::npos) return String();
+        return String(s_.substr(includeSubString ? pos : pos + sub.s_.size()));
+    }
 private:
     std::string s_;
 };
@@ -72,6 +84,20 @@ public:
     static StringArray fromLines(const String& s) { StringArray sa; return sa; }
     static StringArray fromTokens(const String&, const String&, const String&) { return StringArray(); }
     static StringArray fromTokens(const String&, bool) { return StringArray(); }
+    int addTokens(const String& str, const String& delims, const String& = String()) {
+        std::string src = str.toStdString();
+        std::string d = delims.toStdString();
+        size_t start = 0, end;
+        while ((end = src.find_first_of(d, start)) != std::string::npos) {
+            if (end > start) v_.push_back(String(src.substr(start, end - start)));
+            start = end + 1;
+        }
+        if (start < src.size()) v_.push_back(String(src.substr(start)));
+        return (int)v_.size();
+    }
+    int addTokens(const String& str, bool) {
+        return addTokens(str, String(" \t"));
+    }
 private:
     std::vector<String> v_;
 };
@@ -87,6 +113,14 @@ public:
     String getFileExtension() const { return String(); }
     String getFullPathName() const { return path_; }
     String getFileName() const { return path_; }
+    String getFileNameWithoutExtension() const { 
+        auto s = path_.toStdString();
+        auto slash = s.rfind('/');
+        if (slash != std::string::npos) s = s.substr(slash+1);
+        auto dot = s.rfind('.');
+        if (dot != std::string::npos) s = s.substr(0, dot);
+        return String(s);
+    }
     File getChildFile(const String&) const { return File(); }
     File getParentDirectory() const { return File(); }
     StringArray readLines() const { return StringArray(); }
