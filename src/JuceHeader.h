@@ -184,6 +184,22 @@ public:
 };
 
 
+
+// MemoryOutputStream stub
+class MemoryOutputStream {
+public:
+    explicit MemoryOutputStream(size_t initialSize = 0) {}
+    const void* getData() const { return nullptr; }
+    size_t getDataSize() const { return 0; }
+    bool write(const void*, size_t) { return true; }
+};
+
+// Base64 stub (bare-metal: no encode/decode needed)
+struct Base64 {
+    static String toBase64(const void*, size_t) { return String(); }
+    static bool convertFromBase64(MemoryOutputStream&, const String&) { return false; }
+};
+
 // FloatVectorOperations stub (juce_audio_basics)
 class FloatVectorOperations {
 public:
