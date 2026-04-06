@@ -11,11 +11,13 @@ VITALINC = \
     -I$(VITALHOME)/src/synthesis \
     -I$(VITALHOME)/src/synthesis/synth_engine \
     -I$(VITALHOME)/src/synthesis/effects \
+    -I$(VITALHOME)/src/synthesis/effects_engine \
     -I$(VITALHOME)/src/synthesis/filters \
     -I$(VITALHOME)/src/synthesis/framework \
     -I$(VITALHOME)/src/synthesis/lookups \
     -I$(VITALHOME)/src/synthesis/modulators \
     -I$(VITALHOME)/src/synthesis/modules \
+    -I$(VITALHOME)/src/synthesis/producers \
     -I$(VITALHOME)/src/synthesis/utilities \
     -I$(VITALHOME)/third_party/JUCE/modules \
     -I$(VITALHOME)/third_party
@@ -35,11 +37,13 @@ VITAL_COMMON_SRCS := \
     $(VITALHOME)/src/common/tuning.cpp
 VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/effects/*.cpp) \
+    $(wildcard $(VITALHOME)/src/synthesis/effects_engine/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/filters/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/framework/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/lookups/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/modulators/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/modules/*.cpp) \
+    $(wildcard $(VITALHOME)/src/synthesis/producers/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/utilities/*.cpp)
 
 VITAL_OBJS := $(VITAL_COMMON_SRCS:.cpp=.o) $(VITAL_SYNTH_SRCS:.cpp=.o)
