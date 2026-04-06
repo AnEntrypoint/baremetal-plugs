@@ -10,6 +10,10 @@ struct _reent* _impure_ptr = nullptr;
 
 char* getenv(const char*) { return nullptr; }
 
+int fputc(int c, FILE*) { return c; }
+int fputs(const char*, FILE*) { return 0; }
+size_t fwrite(const void*, size_t, size_t n, FILE*) { return n; }
+
 static void _put(char** p, char* end, char c) { if (*p < end) { **p = c; ++(*p); } }
 static void _putu(char** p, char* end, unsigned long long v, int base) {
     if (v >= (unsigned long long)base) _putu(p, end, v/base, base);
