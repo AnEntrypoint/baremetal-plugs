@@ -66,12 +66,17 @@ src/vital_synth.o: src/vital_synth.cpp
 	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -c -o $@ $<
 
 
-SOUND_ENGINE_OBJ = $(VITALHOME)/src/synthesis/effects_engine/sound_engine.o
-VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_OBJ),$(VITAL_OBJS))
+SOUND_ENGINE_EFF = $(VITALHOME)/src/synthesis/effects_engine/sound_engine.o
+SOUND_ENGINE_SYN = $(VITALHOME)/src/synthesis/synth_engine/sound_engine.o
+VITAL_OBJS_FILTERED := $(filter-out $(SOUND_ENGINE_EFF) $(SOUND_ENGINE_SYN),$(VITAL_OBJS))
 
-$(SOUND_ENGINE_OBJ): $(VITALHOME)/src/synthesis/effects_engine/sound_engine.cpp
+$(SOUND_ENGINE_EFF): $(VITALHOME)/src/synthesis/effects_engine/sound_engine.cpp
 	@echo "  CPP   $@"
 	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -include chorus_module.h -include upsampler.h -c -o $@ $<
+
+$(SOUND_ENGINE_SYN): $(VITALHOME)/src/synthesis/synth_engine/sound_engine.cpp
+	@echo "  CPP   $@"
+	@$(CPP) $(CPPFLAGS) $(VITALFLAGS) -include chorus_module.h -c -o $@ $<
 
 $(VITAL_OBJS_FILTERED): %.o: %.cpp
 	@echo "  CPP   $@"
