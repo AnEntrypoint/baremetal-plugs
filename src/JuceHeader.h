@@ -124,6 +124,7 @@ public:
     File getChildFile(const String&) const { return File(); }
     File getParentDirectory() const { return File(); }
     StringArray readLines() const { return StringArray(); }
+    bool readLines(StringArray& result) const { return false; }
     std::unique_ptr<InputStream> createInputStream() const { return nullptr; }
     bool operator==(const File& o) const { return path_ == o.path_; }
     bool operator!=(const File& o) const { return path_ != o.path_; }
