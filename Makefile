@@ -27,7 +27,12 @@ VITALFLAGS = -I src $(VITALINC) $(VITALDEFS)
 EXTRAINCLUDE += -I src $(VITALINC)
 DEFINE       += $(VITALDEFS)
 
-VITAL_COMMON_SRCS := $(wildcard $(VITALHOME)/src/common/*.cpp)
+VITAL_COMMON_SRCS := \
+    $(VITALHOME)/src/common/line_generator.cpp \
+    $(VITALHOME)/src/common/midi_manager.cpp \
+    $(VITALHOME)/src/common/synth_parameters.cpp \
+    $(VITALHOME)/src/common/synth_types.cpp \
+    $(VITALHOME)/src/common/tuning.cpp
 VITAL_SYNTH_SRCS  := $(wildcard $(VITALHOME)/src/synthesis/synth_engine/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/effects/*.cpp) \
     $(wildcard $(VITALHOME)/src/synthesis/filters/*.cpp) \
