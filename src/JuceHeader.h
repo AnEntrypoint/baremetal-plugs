@@ -55,8 +55,8 @@ public:
     const char* toRawUTF8() const { return s_.c_str(); }
     std::string toStdString() const { return s_; }
     static String fromUTF8(const char* s) { return String(s); }
-    float getFloatValue() const { try { return std::stof(s_); } catch(...) { return 0.0f; } }
-    int getIntValue() const { try { return std::stoi(s_); } catch(...) { return 0; } }
+    float getFloatValue() const { return s_.empty() ? 0.0f : (float)std::atof(s_.c_str()); }
+    int getIntValue() const { return s_.empty() ? 0 : std::atoi(s_.c_str()); }
     String substring(int start, int end = -1) const {
         if (end < 0) return String(s_.substr(start));
         return String(s_.substr(start, end - start));
