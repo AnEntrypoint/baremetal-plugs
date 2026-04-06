@@ -45,17 +45,7 @@ jobs:
 
       - name: patch vital sources
         working-directory: vital
-        run: |
-          python3 - <<'EOF'
-import re, pathlib
-p = pathlib.Path('src/synthesis/effects_engine/effects_modulation_handler.h')
-t = p.read_text()
-needle = '      void disableModSource(const std::string& source);'
-insert = '\n      void setPitchWheelControl(Value*) {}\n      void setModWheelControl(Value*) {}'
-t = t.replace(needle, needle + insert, 1)
-p.write_text(t)
-print('patch applied:', 'setPitchWheelControl' in t)
-EOF
+        run: sed -i '/void disableModSource/a\      void setPitchWheelControl(Value*) {}\n      void setModWheelControl(Value*) {}' src/synthesis/effects_engine/effects_modulation_handler.h
       - name: build circle libs
         working-directory: circle
         run: |
