@@ -1,5 +1,154 @@
 #pragma once
 
+// Bare-metal stub replacing juce_core. Provides STL includes and minimal
+// JUCE type stubs so Vital synthesis sources compile without juce_core POSIX deps.
+
+#include <algorithm>
+#include <atomic>
+#include <complex>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <functional>
+#include <map>
+#include <memory>
+#include <random>
+#include <set>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
+
+// JUCE integer typedefs
+using int8   = int8_t;
+using uint8  = uint8_t;
+using int16  = int16_t;
+using uint16 = uint16_t;
+using int32  = int32_t;
+using uint32 = uint32_t;
+using int64  = int64_t;
+using uint64 = uint64_t;
+
+// Minimal juce::String stub (non-functional, compile-only)
+class String {
+public:
+    String() {}
+    String(const char* s) : s_(s ? s : "") {}
+    String(const std::string& s) : s_(s) {}
+    String operator+(const String& o) const { return String(s_ + o.s_); }
+    String operator+(const char* o) const { return String(s_ + (o ? o : "")); }
+    bool operator==(const String& o) const { return s_ == o.s_; }
+    bool operator!=(const String& o) const { return s_ != o.s_; }
+    bool operator<(const String& o) const { return s_ < o.s_; }
+    String toLowerCase() const { auto r = s_; for(auto& c:r) c=tolower(c); return String(r); }
+    String trim() const { return String(s_); }
+    String upToFirstOccurrenceOf(const String&, bool, bool) const { return *this; }
+    String fromLastOccurrenceOf(const String&, bool, bool) const { return *this; }
+    String removeCharacters(const String&) const { return *this; }
+    bool startsWith(const String& p) const { return s_.find(p.s_) == 0; }
+    bool endsWith(const String& p) const { return s_.size() >= p.s_.size() && s_.rfind(p.s_) == s_.size()-p.s_.size(); }
+    bool contains(const String& p) const { return s_.find(p.s_) != std::string::npos; }
+    bool isEmpty() const { return s_.empty(); }
+    bool isNotEmpty() const { return !s_.empty(); }
+    int length() const { return (int)s_.size(); }
+    const char* toRawUTF8() const { return s_.c_str(); }
+    std::string toStdString() const { return s_; }
+    static String fromUTF8(const char* s) { return String(s); }
+private:
+    std::string s_;
+};
+inline String operator+(const char* a, const String& b) { return String(a) + b; }
+
+// StringArray stub
+class StringArray {
+public:
+    StringArray() {}
+    void add(const String& s) { v_.push_back(s); }
+    int size() const { return (int)v_.size(); }
+    const String& operator[](int i) const { return v_[i]; }
+    auto begin() const { return v_.begin(); }
+    auto end() const { return v_.end(); }
+    static StringArray fromLines(const String& s) { StringArray sa; return sa; }
+    static StringArray fromTokens(const String&, const String&, const String&) { return StringArray(); }
+    static StringArray fromTokens(const String&, bool) { return StringArray(); }
+private:
+    std::vector<String> v_;
+};
+
+// File stub (bare-metal: no filesystem)
+class InputStream { public: virtual ~InputStream(){} virtual bool isExhausted(){return true;} virtual int read(void*,int){return 0;} virtual String readNextLine(){return String();} virtual bool isEOF(){return true;} };
+class File {
+public:
+    File() {}
+    File(const String& path) : path_(path) {}
+    bool existsAsFile() const { return false; }
+    bool isDirectory() const { return false; }
+    String getFileExtension() const { return String(); }
+    String getFullPathName() const { return path_; }
+    String getFileName() const { return path_; }
+    File getChildFile(const String&) const { return File(); }
+    File getParentDirectory() const { return File(); }
+    StringArray readLines() const { return StringArray(); }
+    std::unique_ptr<InputStream> createInputStream() const { return nullptr; }
+    bool operator==(const File& o) const { return path_ == o.path_; }
+    bool operator!=(const File& o) const { return path_ != o.path_; }
+    bool operator<(const File& o) const { return path_ < o.path_; }
+    static File getSpecialLocation(int) { return File(); }
+    static File getCurrentWorkingDirectory() { return File(); }
+    bool isNull() const { return path_.isEmpty(); }
+private:
+    String path_;
+};
+
+// MidiMessage stub
+class MidiMessage {
+public:
+    MidiMessage() : data_{0,0,0,0} {}
+    bool isNoteOn(bool=true) const { return false; }
+    bool isNoteOff(bool=true) const { return false; }
+    bool isController() const { return false; }
+    bool isSustainPedalOn() const { return false; }
+    bool isSostenutoPedalOn() const { return false; }
+    bool isChannelPressure() const { return false; }
+    bool isAftertouch() const { return false; }
+    bool isPitchWheel() const { return false; }
+    int getNoteNumber() const { return 0; }
+    int getVelocity() const { return 0; }
+    float getFloatVelocity() const { return 0.0f; }
+    int getControllerNumber() const { return 0; }
+    int getControllerValue() const { return 0; }
+    int getChannel() const { return 1; }
+    int getPitchWheelValue() const { return 0; }
+    int getChannelPressureValue() const { return 0; }
+    int getAfterTouchValue() const { return 0; }
+    const uint8* getRawData() const { return data_; }
+    int getRawDataSize() const { return 4; }
+    double getTimeStamp() const { return 0.0; }
+private:
+    uint8 data_[4];
+};
+
+// MidiBuffer stub
+class MidiBuffer {
+public:
+    struct Iterator {
+        Iterator(const MidiBuffer&) {}
+        bool getNextEvent(MidiMessage&, int&) { return false; }
+    };
+    bool isEmpty() const { return true; }
+    void clear() {}
+    void addEvent(const MidiMessage&, int) {}
+};
+
+// MidiKeyboardState stub
+class MidiKeyboardState {
+public:
+    void reset() {}
+    void processNextMidiBuffer(MidiBuffer&, int, int, bool) {}
+};
+
+// JUCE macros
 #define JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(className) \
     className(const className&) = delete; \
     className& operator=(const className&) = delete;
