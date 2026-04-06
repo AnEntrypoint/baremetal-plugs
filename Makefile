@@ -6,6 +6,7 @@ VITALHOME  = ../vital
 STDLIB_SUPPORT = 3
 
 VITALINC = \
+    -I$(VITALHOME)/headless/JuceLibraryCode \
     -I$(VITALHOME)/src/common \
     -I$(VITALHOME)/src/synthesis \
     -I$(VITALHOME)/src/synthesis/synth_engine \
@@ -19,14 +20,8 @@ VITALINC = \
     -I$(VITALHOME)/third_party/JUCE/modules \
     -I$(VITALHOME)/third_party/json
 
-VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 \
-    -DJUCE_STANDALONE_APPLICATION=0 \
-    -DJUCE_MODULE_AVAILABLE_juce_audio_basics=1 \
-    -DJUCE_MODULE_AVAILABLE_juce_audio_formats=1 \
-    -DJUCE_MODULE_AVAILABLE_juce_core=1 \
-    -DJUCE_MODULE_AVAILABLE_juce_data_structures=1 \
-    -DJUCE_MODULE_AVAILABLE_juce_dsp=1 \
-    -DJUCE_MODULE_AVAILABLE_juce_events=1
+VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
+    -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005
 
 EXTRAINCLUDE += $(VITALINC) -I src
 DEFINE       += $(VITALDEFS)
