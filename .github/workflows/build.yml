@@ -45,7 +45,9 @@ jobs:
 
       - name: patch vital sources
         working-directory: vital
-        run: sed -i '/void disableModSource/a\      void setPitchWheelControl(Value*) {}\n      void setModWheelControl(Value*) {}' src/synthesis/effects_engine/effects_modulation_handler.h
+        run: |
+          sed -i '/void disableModSource/a\      void setPitchWheelControl(Value*) {}\n      void setModWheelControl(Value*) {}' src/synthesis/effects_engine/effects_modulation_handler.h
+          sed -i 's|#include "synth_module.h"|#include "synth_module.h"\n#include "envelope.h"|' src/synthesis/modules/envelope_module.h
       - name: build circle libs
         working-directory: circle
         run: |
