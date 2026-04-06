@@ -26,7 +26,7 @@ VITALINC = \
 VITALDEFS = -DHEADLESS=1 -DNO_AUTH=1 -DJUCE_STANDALONE_APPLICATION=0 \
     -DJUCE_USE_CURL=0 -DJUCE_PROJUCER_VERSION=0x60005 -DLINUX=1
 
-VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h
+VITALFLAGS = -I src $(VITALINC) $(VITALDEFS) -include operators.h -fno-exceptions -fno-rtti
 
 EXTRAINCLUDE += -I src $(VITALINC) -include operators.h
 DEFINE       += $(VITALDEFS)
