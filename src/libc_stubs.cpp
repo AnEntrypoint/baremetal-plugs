@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdarg.h>
 #include <wchar.h>
-#include <ctype.h>
+#include <stdio.h>
 
 extern "C" {
 
@@ -10,47 +10,35 @@ struct _reent* _impure_ptr = nullptr;
 
 char* getenv(const char*) { return nullptr; }
 
-static void _putc_buf(char** p, char* end, char c) {
-    if (*p < end) { **p = c; ++(*p); }
+static void _put(char** p, char* end, char c) { if (*p < end) { **p = c; ++(*p); } }
+static void _putu(char** p, char* end, unsigned long long v, int base) {
+    if (v >= (unsigned long long)base) _putu(p, end, v/base, base);
+    int c = (int)(v % base); _put(p, end, c < 10 ? '0'+c : 'a'+c-10);
 }
-
-static void _puts_buf(char** p, char* end, const char* s) {
-    while (s && *s) _putc_buf(p, end, *s++);
-}
-
-static void _putu_buf(char** p, char* end, unsigned long long v, int base) {
-    if (v >= (unsigned long long)base) _putu_buf(p, end, v / base, base);
-    char c = (char)(v % base);
-    _putc_buf(p, end, c < 10 ? '0' + c : 'a' + c - 10);
-}
-
 int vsnprintf(char* buf, size_t n, const char* fmt, va_list ap) {
-    char* p = buf, * end = buf + (n > 0 ? n - 1 : 0);
+    char* p = buf, *end = buf + (n > 0 ? n-1 : 0);
     for (; *fmt; ++fmt) {
-        if (*fmt != '%') { _putc_buf(&p, end, *fmt); continue; }
+        if (*fmt != '%') { _put(&p, end, *fmt); continue; }
         ++fmt;
-        if (*fmt == 'd' || *fmt == 'i') { long long v = va_arg(ap, int); if (v < 0) { _putc_buf(&p, end, '-'); v = -v; } _putu_buf(&p, end, (unsigned long long)v, 10); }
-        else if (*fmt == 'u') { _putu_buf(&p, end, va_arg(ap, unsigned), 10); }
-        else if (*fmt == 'x') { _putu_buf(&p, end, va_arg(ap, unsigned), 16); }
-        else if (*fmt == 's') { _puts_buf(&p, end, va_arg(ap, const char*)); }
-        else if (*fmt == 'c') { _putc_buf(&p, end, (char)va_arg(ap, int)); }
-        else if (*fmt == '%') { _putc_buf(&p, end, '%'); }
-        else { va_arg(ap, int); }
+        if (*fmt=='d'||*fmt=='i') { long long v=va_arg(ap,int); if(v<0){_put(&p,end,'-');v=-v;} _putu(&p,end,(unsigned long long)v,10); }
+        else if (*fmt=='u') { _putu(&p,end,va_arg(ap,unsigned),10); }
+        else if (*fmt=='x') { _putu(&p,end,va_arg(ap,unsigned),16); }
+        else if (*fmt=='s') { const char* s=va_arg(ap,const char*); while(s&&*s) _put(&p,end,*s++); }
+        else if (*fmt=='c') { _put(&p,end,(char)va_arg(ap,int)); }
+        else if (*fmt=='%') { _put(&p,end,'%'); }
+        else { va_arg(ap,int); }
     }
-    if (n > 0) *p = 0;
-    return (int)(p - buf);
+    if (n>0) *p=0;
+    return (int)(p-buf);
 }
-
 int snprintf(char* buf, size_t n, const char* fmt, ...) {
-    va_list ap; va_start(ap, fmt); int r = vsnprintf(buf, n, fmt, ap); va_end(ap); return r;
+    va_list ap; va_start(ap,fmt); int r=vsnprintf(buf,n,fmt,ap); va_end(ap); return r;
 }
 int sprintf(char* buf, const char* fmt, ...) {
-    va_list ap; va_start(ap, fmt); int r = vsnprintf(buf, 4096, fmt, ap); va_end(ap); return r;
+    va_list ap; va_start(ap,fmt); int r=vsnprintf(buf,4096,fmt,ap); va_end(ap); return r;
 }
 
-int fputc(int c, void*) { return c; }
-int fputs(const char*, void*) { return 0; }
-size_t fwrite(const void*, size_t, size_t, void*) { return 0; }
+int tolower(int c) { return (c >= 'A' && c <= 'Z') ? c + 32 : c; }
 
 void* memchr(const void* s, int c, size_t n) {
     const unsigned char* p = (const unsigned char*)s;
@@ -65,7 +53,6 @@ double atof(const char* s) {
     if (*s == '.') { ++s; while (*s >= '0' && *s <= '9') { frac /= 10.0; r += (*s++ - '0') * frac; } }
     return neg ? -r : r;
 }
-int tolower(int c) { return (c >= 'A' && c <= 'Z') ? c + 32 : c; }
 
 wchar_t* wmemchr(const wchar_t* s, wchar_t c, size_t n) {
     for (size_t i=0;i<n;++i) if (s[i]==c) return (wchar_t*)(s+i); return nullptr;
